@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benim Vlog'um - Gelişmiş</title>
+<meta name="description" content="Günlük vlog'lar, gezi videoları ve kısa hikâyeler - Türkçe vlog sayfası.">
+<style>
+:root {
+  --primary-color: #ff5252;
+  --primary-hover: #e04a4a;
+  --light-bg: #f9f9f9;
+  --dark-text: #333;
+  --light-text: #fff;
+  --border-radius: 8px;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-bg);
+  color: var(--dark-text);
+  line-height: 1.6;
+}
+header {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  padding: 15px 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+header h1 {
+  margin: 0;
+  font-size: 1.8em;
+  cursor: pointer;
+}
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+nav a {
+  color: var(--light-text);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.auth-buttons button, .user-info button {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+.auth-buttons button:hover, .user-info button:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+.user-info {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#logout-btn {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+#show-add-vlog-modal-btn {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+#show-add-vlog-modal-btn:hover {
+    background-color: white;
+    color: var(--success-color);
+}
+main {
+  width: 90%;
+  max-width: 900px;
+  margin: 30px auto;
+  background-color: var(--light-text);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+section {
+  margin-bottom: 40px;
+}
+h2 {
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 8px;
+  color: var(--primary-color);
+}
+h3, h4 {
+  color: #444;
+}
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  margin: 20px 0;
+  border-radius: var(--border-radius);
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#vlog-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+article {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: var(--border-radius);
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+article:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+article img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+article p {
+    flex-grow: 1;
+}
+article a {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--primary-color);
+  font-weight: bold;
+  text-decoration: none;
+}
+article a:hover {
+  text-decoration: underline;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+input, textarea, button, select {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+button:hover {
+  background-color: var(--primary-hover);
+}
+button.secondary {
+    background-color: #6c757d;
+}
+button.secondary:hover {
+    background-color: #5a6268;
+}
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: var(--dark-text);
+  color: var(--light-text);
+  margin-top: 30px;
+  font-size: 0.9em;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+.modal.active {
+    display: flex;
+}
+.modal-content {
+  background-color: #fefefe;
+  padding: 25px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: var(--border-radius);
+  position: relative;
+  animation: fadeIn 0.3s;
+}
+.close-btn {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close-btn:hover {
+  color: black;
+}
+@keyframes fadeIn {
+  from {opacity: 0; transform: scale(0.9);}
+  to {opacity: 1; transform: scale(1);}
+}
+#admin-paneli {
+    display: none;
+}
+#admin-paneli table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#admin-paneli th, #admin-paneli td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+#admin-paneli th {
+    background-color: #f2f2f2;
+}
+#admin-paneli .action-buttons button, #admin-paneli .action-buttons .delete {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 4px;
+}
+#admin-paneli .action-buttons .delete {
+    background-color: var(--error-color);
+}
+.hidden {
+    display: none;
+}
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 2000;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    visibility: hidden;
+}
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+.notification.success {
+    background-color: var(--success-color);
+}
+.notification.error {
+    background-color: var(--error-color);
+}
+</style>
+</head>
+<body>
+  <header>
+    <h1 id="site-title">Benim Vlog'um</h1>
+    <nav>
+      <ul id="nav-links">
+        <li><a href="#anasayfa">Anasayfa</a></li>
+        <li><a href="#videolar">Videolar</a></li>
+        <li><a href="#hakkinda">Hakkında</a></li>
+        <li><a href="#iletisim">İletişim</a></li>
+      </ul>
+    </nav>
+    <div id="auth-container">
+    </div>
+  </header>
+
+  <main>
+    <section id="anasayfa">
+      <h2>Öne Çıkan Vlog</h2>
+      <div id="featured-vlog-container">
+      </div>
+    </section>
+
+    <section id="videolar">
+      <h2>Tüm Vlog'lar</h2>
+      <div id="vlog-list">
+      </div>
+    </section>
+    
+    <section id="hakkinda">
+      <h2>Hakkımda</h2>
+      <p>Merhaba! Ben ... (isim), günlük yaşantımı, gezilerimi ve kısa hikâyelerimi paylaştığım bir vlog kanalı işletiyorum. Amacım izleyicilerime samimi ve sıcak içerikler sunmak.</p>
+    </section>
+
+    <section id="iletisim">
+      <h2>İletişim</h2>
+      <p>Yorumlar, işbirlikleri veya sorular için bana ulaşabilirsin.</p>
+        <form id="contact-form">
+          <label for="isim">İsim:</label>
+          <input type="text" id="isim" name="isim" required>
+          <label for="konu">Konu:</label>
+          <input type="text" id="konu" name="konu" required>
+          <label for="mesaj">Mesaj:</label>
+          <textarea id="mesaj" name="mesaj" rows="4" required></textarea>
+          <button type="submit">Gönder</button>
+        </form>
+    </section>
+
+    <section id="admin-paneli">
+        <h2>Admin Paneli</h2>
+        <div id="vlog-management">
+            <h3>Vlog Yönetimi</h3>
+            <form id="vlog-form">
+                <input type="hidden" id="vlog-id">
+                <input type="text" id="vlog-title" placeholder="Vlog Başlığı" required>
+                <textarea id="vlog-desc" placeholder="Kısa Açıklama" rows="3" required></textarea>
+                <input type="text" id="vlog-video-id" placeholder="YouTube Video ID (örn: dQw4w9WgXcQ)" required>
+                <input type="text" id="vlog-image-url" placeholder="Görsel URL'i" required>
+                <label><input type="checkbox" id="vlog-featured"> Öne Çıkan Vlog Yap</label>
+                <button type="submit">Vlog Kaydet</button>
+                <button type="button" id="cancel-edit-btn" class="secondary hidden">İptal</button>
+            </form>
+            <table id="admin-vlog-table">
+                <thead><tr><th>Başlık</th><th>Öne Çıkan</th><th>İşlemler</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="user-management" style="margin-top: 40px;">
+            <h3>Kullanıcı Yönetimi</h3>
+            <table id="admin-user-table">
+                <thead><tr><th>Kullanıcı Adı</th><th>Rol</th><th>Kayıt Tarihi</th><th>Son Giriş</th><th>İşlemler</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="yil"></span> Benim Vlog'um. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Giriş Yap</h3>
+      <form id="login-form">
+        <input type="text" id="login-username" placeholder="Kullanıcı Adı" required>
+        <input type="password" id="login-password" placeholder="Şifre" required>
+        <button type="submit">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="register-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Kayıt Ol</h3>
+      <form id="register-form">
+        <input type="text" id="register-username" placeholder="Kullanıcı Adı" required>
+        <input type="password" id="register-password" placeholder="Şifre" required>
+        <select id="register-role" required>
+            <option value="user">Normal Üye</option>
+            <option value="author">Vlog Yazarı</option>
+        </select>
+        <button type="submit">Kayıt Ol</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="add-vlog-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Yeni Vlog Ekle</h3>
+      <form id="add-vlog-form">
+        <input type="text" id="add-vlog-title" placeholder="Vlog Başlığı" required>
+        <textarea id="add-vlog-desc" placeholder="Kısa Açıklama" rows="3" required></textarea>
+        <input type="text" id="add-vlog-video-id" placeholder="YouTube Video ID" required>
+        <input type="text" id="add-vlog-image-url" placeholder="Görsel URL'i" required>
+        <button type="submit">Yayınla</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('yil').textContent = new Date().getFullYear();
+
+        const authContainer = document.getElementById('auth-container');
+        const navLinks = document.getElementById('nav-links');
+        const adminPanel = document.getElementById('admin-paneli');
+        const notificationElement = document.getElementById('notification');
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const addVlogModal = document.getElementById('add-vlog-modal');
+        const vlogList = document.getElementById('vlog-list');
+        const featuredVlogContainer = document.getElementById('featured-vlog-container');
+        const vlogForm = document.getElementById('vlog-form');
+        const adminVlogTableBody = document.querySelector('#admin-vlog-table tbody');
+        const adminUserTableBody = document.querySelector('#admin-user-table tbody');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+        let currentUser = null;
+        let users = [];
+        let vlogs = [];
+        
+        function loadData() {
+            users = JSON.parse(localStorage.getItem('vlog_users')) || [];
+            vlogs = JSON.parse(localStorage.getItem('vlog_vlogs')) || [];
+            currentUser = JSON.parse(sessionStorage.getItem('vlog_currentUser'));
+
+            if (users.length === 0) {
+                const now = new Date().toISOString();
+                users = [
+                    { username: 'admin', password: '1234', role: 'admin', registrationDate: now, lastLoginDate: null },
+                    { username: 'yazar', password: '1234', role: 'author', registrationDate: now, lastLoginDate: null },
+                    { username: 'uye', password: '1234', role: 'user', registrationDate: now, lastLoginDate: null }
+                ];
+            }
+            if (vlogs.length === 0) {
+                vlogs = [
+                    { id: 1, title: 'Haftanın Vlog\'u: İstanbul Gezisi', desc: 'Bu videoda İstanbul\'da bir günlük gezi rotamı ve favori kafelerimi paylaşıyorum.', videoId: 'dQw4w9WgXcQ', imageUrl: 'https://placehold.co/600x400/ff5252/white?text=İstanbul', featured: true },
+                    { id: 2, title: 'Vlog #12 - Sabah Rutini', desc: 'Sabah rutinim, kahvaltı tarifleri ve hazırlıklar.', videoId: 'dQw4w9WgXcQ', imageUrl: 'https://placehold.co/600x400/52c2ff/white?text=Sabah', featured: false },
+                    { id: 3, title: 'Vlog #11 - Sürpriz Yolculuk', desc: 'Plansız bir hafta sonu kaçamağı yaptım.', videoId: 'dQw4w9WgXcQ', imageUrl: 'https://placehold.co/600x400/52ff8c/white?text=Yolculuk', featured: false },
+                ];
+            }
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('vlog_users', JSON.stringify(users));
+            localStorage.setItem('vlog_vlogs', JSON.stringify(vlogs));
+            if(currentUser) {
+                sessionStorage.setItem('vlog_currentUser', JSON.stringify(currentUser));
+            } else {
+                sessionStorage.removeItem('vlog_currentUser');
+            }
+        }
+        
+        function updateUI() {
+            authContainer.innerHTML = '';
+            if (currentUser) {
+                let authorControls = '';
+                if (currentUser.role === 'author' || currentUser.role === 'admin') {
+                    authorControls = `<button id="show-add-vlog-modal-btn">Yeni Vlog Ekle</button>`;
+                }
+
+                authContainer.innerHTML = `
+                    <div class="user-info">
+                        <span>Hoş geldin, ${currentUser.username}!</span>
+                        ${authorControls}
+                        <button id="logout-btn">Çıkış Yap</button>
+                    </div>
+                `;
+                document.getElementById('logout-btn').addEventListener('click', logout);
+                if (document.getElementById('show-add-vlog-modal-btn')) {
+                    document.getElementById('show-add-vlog-modal-btn').addEventListener('click', () => openModal(addVlogModal));
+                }
+            } else {
+                authContainer.innerHTML = `
+                    <div class="auth-buttons">
+                        <button id="show-login-modal-btn">Giriş Yap</button>
+                        <button id="show-register-modal-btn">Kayıt Ol</button>
+                    </div>
+                `;
+                 document.getElementById('show-login-modal-btn').addEventListener('click', () => openModal(loginModal));
+                 document.getElementById('show-register-modal-btn').addEventListener('click', () => openModal(registerModal));
+            }
+
+            const adminLink = document.getElementById('admin-nav-link');
+            if (currentUser && currentUser.role === 'admin') {
+                if (!adminLink) {
+                    const li = document.createElement('li');
+                    li.id = 'admin-nav-link';
+                    li.innerHTML = `<a href="#admin-paneli">Admin Paneli</a>`;
+                    navLinks.appendChild(li);
+                }
+                adminPanel.style.display = 'block';
+                renderAdminPanel();
+            } else {
+                if (adminLink) {
+                    adminLink.remove();
+                }
+                adminPanel.style.display = 'none';
+            }
+        }
+
+        function renderVlogs() {
+            vlogList.innerHTML = '';
+            featuredVlogContainer.innerHTML = '';
+
+            const featuredVlog = vlogs.find(v => v.featured);
+            if(featuredVlog){
+                 featuredVlogContainer.innerHTML = `
+                     <article>
+                         <h3>${featuredVlog.title}</h3>
+                         <div class="video-wrapper">
+                             <iframe src="https://www.youtube.com/embed/${featuredVlog.videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                         </div>
+                         <p>${featuredVlog.desc}</p>
+                     </article>
+                 `;
+            }
+
+            vlogs.filter(v => !v.featured).forEach(vlog => {
+                const vlogElement = document.createElement('article');
+                vlogElement.innerHTML = `
+                    <img src="${vlog.imageUrl}" alt="${vlog.title}">
+                    <h4>${vlog.title}</h4>
+                    <p>${vlog.desc.substring(0, 50)}...</p>
+                    <a href="#" class="view-vlog" data-videoid="${vlog.videoId}" data-title="${vlog.title}" data-desc="${vlog.desc}">İzle</a>
+                `;
+                vlogList.appendChild(vlogElement);
+            });
+        }
+        
+        function formatDate(isoString) {
+            if (!isoString) return 'Yok';
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+            return new Date(isoString).toLocaleString('tr-TR', options);
+        }
+
+        function renderAdminPanel() {
+            adminVlogTableBody.innerHTML = '';
+            vlogs.forEach(vlog => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${vlog.title}</td>
+                    <td>${vlog.featured ? 'Evet' : 'Hayır'}</td>
+                    <td class="action-buttons">
+                        <button class="edit-vlog-btn" data-id="${vlog.id}">Düzenle</button>
+                        <a href="#" class="delete-vlog-btn delete" data-id="${vlog.id}">Sil</a>
+                    </td>
+                `;
+                adminVlogTableBody.appendChild(row);
+            });
+
+            adminUserTableBody.innerHTML = '';
+            users.forEach(user => {
+                 const row = document.createElement('tr');
+                 const deleteButton = user.username === 'admin' 
+                    ? `<span style="color: #999; padding: 5px 10px; display: inline-block;">Silinemez</span>`
+                    : `<a href="#" class="delete-user-btn delete" data-username="${user.username}">Sil</a>`;
+
+                 row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.role}</td>
+                    <td>${formatDate(user.registrationDate)}</td>
+                    <td>${formatDate(user.lastLoginDate)}</td>
+                    <td class="action-buttons">${deleteButton}</td>
+                 `;
+                 adminUserTableBody.appendChild(row);
+            });
+        }
+
+        function showNotification(message, type = 'success') {
+            notificationElement.textContent = message;
+            notificationElement.className = 'notification';
+            notificationElement.classList.add(type);
+            notificationElement.classList.add('show');
+
+            setTimeout(() => {
+                notificationElement.classList.remove('show');
+            }, 3000);
+        }
+
+        function login(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const user = users.find(u => u.username === username && u.password === password);
+            if(user) {
+                user.lastLoginDate = new Date().toISOString();
+                currentUser = user;
+                saveData();
+                updateUI();
+                closeModal(loginModal);
+                e.target.reset();
+                showNotification(`Hoş geldin, ${user.username}!`, 'success');
+            } else {
+                showNotification('Kullanıcı adı veya şifre hatalı!', 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            saveData();
+            updateUI();
+            showNotification('Başarıyla çıkış yaptınız.', 'success');
+        }
+
+        function register(e) {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+            
+            if (users.some(u => u.username === username)) {
+                showNotification('Bu kullanıcı adı zaten alınmış!', 'error');
+                return;
+            }
+
+            const newUser = {
+                username,
+                password,
+                role,
+                registrationDate: new Date().toISOString(),
+                lastLoginDate: null
+            };
+            users.push(newUser);
+            saveData();
+            showNotification('Kayıt başarılı! Giriş ekranına yönlendiriliyorsunuz...', 'success');
+            e.target.reset();
+
+            setTimeout(() => {
+                 closeModal(registerModal);
+                 openModal(loginModal);
+            }, 1500);
+        }
+
+        function handleAuthorVlogSubmit(e) {
+            e.preventDefault();
+            const newVlog = {
+                id: Date.now(),
+                title: document.getElementById('add-vlog-title').value,
+                desc: document.getElementById('add-vlog-desc').value,
+                videoId: document.getElementById('add-vlog-video-id').value,
+                imageUrl: document.getElementById('add-vlog-image-url').value,
+                featured: false
+            };
+            vlogs.unshift(newVlog);
+            saveData();
+            renderVlogs();
+            if(currentUser.role === 'admin'){
+                renderAdminPanel();
+            }
+            closeModal(addVlogModal);
+            e.target.reset();
+            showNotification('Vlog başarıyla yayınlandı!', 'success');
+        }
+        
+        function handleVlogSubmit(e){
+            e.preventDefault();
+            const id = document.getElementById('vlog-id').value;
+            const updatedVlog = {
+                title: document.getElementById('vlog-title').value,
+                desc: document.getElementById('vlog-desc').value,
+                videoId: document.getElementById('vlog-video-id').value,
+                imageUrl: document.getElementById('vlog-image-url').value,
+                featured: document.getElementById('vlog-featured').checked
+            };
+
+            if(updatedVlog.featured){
+                vlogs.forEach(v => v.featured = false);
+            }
+
+            if(id){
+                const index = vlogs.findIndex(v => v.id == id);
+                vlogs[index] = {...vlogs[index], ...updatedVlog};
+            } else {
+                updatedVlog.id = Date.now();
+                vlogs.unshift(updatedVlog);
+            }
+
+            saveData();
+            renderVlogs();
+            renderAdminPanel();
+            vlogForm.reset();
+            document.getElementById('vlog-id').value = '';
+            cancelEditBtn.classList.add('hidden');
+            showNotification('Vlog başarıyla kaydedildi!', 'success');
+        }
+        
+        function handleAdminTableClick(e){
+            e.preventDefault();
+            if(e.target.classList.contains('edit-vlog-btn')){
+                const id = e.target.dataset.id;
+                const vlogToEdit = vlogs.find(v => v.id == id);
+                document.getElementById('vlog-id').value = vlogToEdit.id;
+                document.getElementById('vlog-title').value = vlogToEdit.title;
+                document.getElementById('vlog-desc').value = vlogToEdit.desc;
+                document.getElementById('vlog-video-id').value = vlogToEdit.videoId;
+                document.getElementById('vlog-image-url').value = vlogToEdit.imageUrl;
+                document.getElementById('vlog-featured').checked = vlogToEdit.featured;
+                cancelEditBtn.classList.remove('hidden');
+                vlogForm.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            if(e.target.classList.contains('delete-vlog-btn')){
+                if(confirm('Bu vlogu silmek istediğinizden emin misiniz?')){
+                    const id = e.target.dataset.id;
+                    vlogs = vlogs.filter(v => v.id != id);
+                    saveData();
+                    renderVlogs();
+                    renderAdminPanel();
+                    showNotification('Vlog silindi.', 'success');
+                }
+            }
+        }
+        
+        function handleAdminUserTableClick(e) {
+            if (e.target.classList.contains('delete-user-btn')) {
+                e.preventDefault();
+                const usernameToDelete = e.target.dataset.username;
+                if (usernameToDelete === 'admin') {
+                    showNotification('Admin kullanıcısı silinemez!', 'error');
+                    return;
+                }
+                if (confirm(`'${usernameToDelete}' kullanıcısını silmek istediğinizden emin misiniz?`)) {
+                    users = users.filter(user => user.username !== usernameToDelete);
+                    saveData();
+                    renderAdminPanel();
+                    showNotification('Kullanıcı başarıyla silindi.', 'success');
+                }
+            }
+        }
+
+        function handleVlogListClick(e) {
+            if(e.target.classList.contains('view-vlog')) {
+                e.preventDefault();
+                const videoId = e.target.dataset.videoid;
+                const title = e.target.dataset.title;
+                const desc = e.target.dataset.desc;
+                
+                featuredVlogContainer.innerHTML = `
+                     <article>
+                         <h3>${title}</h3>
+                         <div class="video-wrapper">
+                             <iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                         </div>
+                         <p>${desc}</p>
+                     </article>
+                 `;
+                 window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function cancelEdit(){
+            vlogForm.reset();
+            document.getElementById('vlog-id').value = '';
+            cancelEditBtn.classList.add('hidden');
+        }
+
+        function openModal(modal) {
+            modal.classList.add('active');
+        }
+        function closeModal(modal) {
+            modal.classList.remove('active');
+        }
+        
+        document.querySelectorAll('.modal .close-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal')));
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) closeModal(e.target);
+        });
+        
+        document.getElementById('login-form').addEventListener('submit', login);
+        document.getElementById('register-form').addEventListener('submit', register);
+        document.getElementById('add-vlog-form').addEventListener('submit', handleAuthorVlogSubmit);
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showNotification('Mesajınız gönderildi!', 'success');
+            e.target.reset();
+        });
+        vlogForm.addEventListener('submit', handleVlogSubmit);
+        adminVlogTableBody.addEventListener('click', handleAdminTableClick);
+        adminUserTableBody.addEventListener('click', handleAdminUserTableClick);
+        vlogList.addEventListener('click', handleVlogListClick);
+        cancelEditBtn.addEventListener('click', cancelEdit);
+        document.getElementById('site-title').addEventListener('click', () => {
+           window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
+        loadData();
+        updateUI();
+        renderVlogs();
+    });
+  </script>
+</body>
+</html>
